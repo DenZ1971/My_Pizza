@@ -5,9 +5,9 @@ from accounts.models import User
 class Product(models.Model):
     name = models.CharField(max_length=256, unique=True)
     description = models.CharField(max_length=520, blank=True)
-    size = models.ImageField(blank=True)
-    weight = models.ImageField(blank=True)
-    price = models.ImageField(blank=True)
+    size = models.PositiveIntegerField(blank=True)
+    weight = models.PositiveIntegerField(blank=True)
+    price = models.PositiveIntegerField(blank=True)
     image = models.ImageField(blank=True)
 
 
@@ -17,12 +17,12 @@ class Category(models.Model):
 
 class DeliveryAdress(models.Model):
     customer_name = models.CharField(max_length=256)
-    postcode = models.IntegerField()
+    postcode = models.PositiveIntegerField()
     street = models.CharField(max_length=256)
-    house_number = models.IntegerField()
-    apt_number = models.IntegerField()
-    phone_number = models.IntegerField()
-    delivery_category = models.CharField(max_length=2, )
+    house_number = models.PositiveIntegerField()
+    apt_number = models.PositiveIntegerField()
+    phone_number = models.CharField(max_length=12)
+    delivery_category = models.CharField(max_length=2)
 
 
 class DeliveryPriceCategory(models.Model):
@@ -42,7 +42,7 @@ class DeliveryPriceCategory(models.Model):
         (ZONE05, 'suburb'),
     )
     category = models.CharField(max_length=2, choices=CATEGORY_CHOICES)
-    delivery_price = models.IntegerField()
+    delivery_price = models.PositiveIntegerField()
 
 
 class Order(models.Model):
@@ -55,9 +55,9 @@ class Order(models.Model):
     )
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    quantity = models.PositiveIntegerField()
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     delivery_adress = models.ForeignKey(DeliveryAdress, on_delete=models.CASCADE)
     delivery_price = models.ForeignKey(DeliveryPriceCategory, on_delete=models.CASCADE)
-    order_sum_price = models.IntegerField()
+    order_sum_price = models.PositiveIntegerField()
     payment_type = models.CharField(max_length=4, choices=PAYMENT_CHOICES)
