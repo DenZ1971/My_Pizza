@@ -17,6 +17,7 @@ class Category(models.Model):
 
 
 class DeliveryAdress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     customer_name = models.CharField(max_length=256)
     postcode = models.PositiveIntegerField()
     street = models.CharField(max_length=256)
@@ -27,12 +28,12 @@ class DeliveryAdress(models.Model):
 
 
 class DeliveryPriceCategory(models.Model):
-    ZONE00 = '00'
-    ZONE01 = '01'
-    ZONE02 = '02'
-    ZONE03 = '03'
-    ZONE04 = '04'
-    ZONE05 = '05'
+    ZONE00 = '11'
+    ZONE01 = '22'
+    ZONE02 = '33'
+    ZONE03 = '44'
+    ZONE04 = '55'
+    ZONE05 = '66'
 
     CATEGORY_CHOICES = (
         (ZONE00, 'pickup'),
@@ -42,7 +43,7 @@ class DeliveryPriceCategory(models.Model):
         (ZONE04, 'town outskirts'),
         (ZONE05, 'suburb'),
     )
-    category = models.CharField(max_length=2, choices=CATEGORY_CHOICES)
+    category = models.CharField(max_length=2, choices=CATEGORY_CHOICES, default="00")
     delivery_price = models.PositiveIntegerField()
 
 
@@ -55,10 +56,21 @@ class Order(models.Model):
         (CARD_IN_ADVANCE, 'card in advance')
     )
 
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
+    # product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    # quantity = models.PositiveIntegerField()
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     delivery_adress = models.ForeignKey(DeliveryAdress, on_delete=models.CASCADE)
     delivery_price = models.ForeignKey(DeliveryPriceCategory, on_delete=models.CASCADE)
     order_sum_price = models.PositiveIntegerField()
     payment_type = models.CharField(max_length=4, choices=PAYMENT_CHOICES)
+
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name="product_items", on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def get_cost(self):
+        return self.price * self.quantity

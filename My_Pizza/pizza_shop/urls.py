@@ -1,14 +1,16 @@
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 
-from .views import ProductViewSet, DeliveryAdressViewSet
+from .views import ProductViewSet, DeliveryAdressViewSet, CartAPI, CreateOrder
 
 router = DefaultRouter()
 router.register('product', ProductViewSet, basename="product")
 router.register('delivery_adress', DeliveryAdressViewSet, basename="delivery_adress")
 
-urlpatterns = router.urls
-
+urlpatterns = [path("", include(router.urls)),
+               path("cart", CartAPI.as_view(), name="cart"),
+               path("create_order", CreateOrder.as_view(), name="create_order")
+               ]
 
 # urlpatterns = [
 #     path("product/", ProductViewSet.as_view({'get': 'list'})),
